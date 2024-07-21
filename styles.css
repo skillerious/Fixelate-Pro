@@ -1,0 +1,172 @@
+body {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  scrollbar-width: thin;
+  scrollbar-color: #333 #111;
+}
+
+body::-webkit-scrollbar {
+  width: 12px;
+}
+
+body::-webkit-scrollbar-track {
+  background: #111;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 10px;
+  border: 2px solid #111;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.sidebar {
+  background-color: #2c2c2c;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: #333 #111;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 12px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: #111;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 10px;
+  border: 2px solid #111;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.main-content {
+  margin-left: 250px;
+  padding-bottom: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: #333 #111;
+}
+
+.main-content::-webkit-scrollbar {
+  width: 12px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: #111;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 10px;
+  border: 2px solid #111;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.sidebar .nav-link {
+  color: #cfd8dc;
+  padding: 10px 15px;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar .nav-link:hover {
+  background-color: #495057;
+}
+
+.sidebar .nav-link.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background-color: #007bff;
+}
+
+.progress-bar {
+  transition: width 0.5s ease;
+}
+
+.section {
+  display: none;
+  scrollbar-width: thin;
+  scrollbar-color: #333 #111;
+}
+
+.section::-webkit-scrollbar {
+  width: 12px;
+}
+
+.section::-webkit-scrollbar-track {
+  background: #111;
+}
+
+.section::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 10px;
+  border: 2px solid #111;
+}
+
+.section::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.section.active {
+  display: block;
+}
+
+.card {
+  background-color: #2c2c2c;
+  border: none;
+}
+
+.card-title {
+  color: #ffffff;
+}
+
+.card-body {
+  color: #ffffff;
+}
+
+.text-success {
+  color: #28a745 !important;
+}
+
+.bi-folder-fill {
+  font-size: 1.2rem;
+  color: #ffc107; /* Yellow color */
+}
+
+#action-buttons {
+  flex-direction: column;
+}
+
+@media (min-width: 576px) {
+  #action-buttons {
+    flex-direction: row;
+  }
+}
+
+.btn-sm {
+  padding: .25rem .5rem;
+  font-size: .875rem;
+  line-height: 1.5;
+  border-radius: .2rem;
+}

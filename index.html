@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Converter</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
+</head>
+<body class="bg-dark text-light">
+  <div class="sidebar d-flex flex-column">
+    <div class="pt-3 flex-grow-1">
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link active" href="#" data-section="convert">
+            Convert Images
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-section="resize">
+            Resize Images
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="mt-auto p-3">
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-section="settings">
+            Settings
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="main-content">
+    <main class="px-md-4">
+      <div id="convert-section" class="section active">
+        <h1 class="mt-5">Image Converter</h1>
+        <div class="mb-3">
+          <button id="select-files" class="btn btn-primary">Select Files</button>
+        </div>
+        <ul id="file-list" class="list-group mb-3"></ul>
+        <div class="mb-3">
+          <label for="format-select" class="form-label">Convert to:</label>
+          <select id="format-select" class="form-select">
+            <option value="jpg">JPG</option>
+            <option value="png">PNG</option>
+            <option value="gif">GIF</option>
+            <option value="bmp">BMP</option>
+            <option value="tiff">TIFF</option>
+            <option value="webp">WEBP</option>
+            <option value="ico">ICO</option>
+            <option value="heic">HEIC</option>
+          </select>
+        </div>
+        <button id="convert-button" class="btn btn-success">Convert</button>
+        <div class="mt-3">
+          <div id="progress-container" class="progress" style="display: none;">
+            <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div>
+          </div>
+        </div>
+        <div id="confirmation" class="alert alert-success mt-3" style="display: none;" role="alert">
+          Conversion completed!
+        </div>
+      </div>
+      <div id="resize-section" class="section">
+        <h1 class="mt-5">Resize Images</h1>
+        <div class="mb-3 d-flex">
+          <button id="select-resize-files" class="btn btn-primary me-2">Select Files</button>
+          <button id="clear-resize-files" class="btn btn-danger" style="display: none;">Clear</button>
+        </div>
+        <ul id="resize-file-list" class="list-group mb-3"></ul>
+        <div id="image-info" class="card mb-3" style="display: none;">
+          <div class="card-body">
+            <h5 class="card-title">Original Image Info:</h5>
+            <p id="image-dimensions">Dimensions: </p>
+            <p id="image-size">Size: </p>
+            <img id="image-preview" src="" alt="Image Preview" style="max-width: 100%;">
+          </div>
+        </div>
+        <div class="mb-3" id="resize-options" style="display: none;">
+          <button id="icon-sizes-button" class="btn btn-secondary">Icon Sizes</button>
+          <button id="custom-size-button" class="btn btn-secondary ms-2">Custom Size</button>
+        </div>
+        <div id="icon-sizes-section" style="display: none;">
+          <label class="form-label">App Icon Sizes (Optional):</label>
+          <div>
+            <input type="checkbox" id="size-16" class="form-check-input">
+            <label for="size-16" class="form-check-label">16x16</label>
+          </div>
+          <div>
+            <input type="checkbox" id="size-32" class="form-check-input">
+            <label for="size-32" class="form-check-label">32x32</label>
+          </div>
+          <div>
+            <input type="checkbox" id="size-64" class="form-check-input">
+            <label for="size-64" class="form-check-label">64x64</label>
+          </div>
+          <div>
+            <input type="checkbox" id="size-128" class="form-check-input">
+            <label for="size-128" class="form-check-label">128x128</label>
+          </div>
+          <div>
+            <input type="checkbox" id="size-256" class="form-check-input">
+            <label for="size-256" class="form-check-label">256x256</label>
+          </div>
+        </div>
+        <div id="custom-size-section" style="display: none;">
+          <div class="mb-3">
+            <label for="width-input" class="form-label">Width:</label>
+            <input type="number" id="width-input" class="form-control" placeholder="Enter width in pixels">
+          </div>
+          <div class="mb-3">
+            <label for="height-input" class="form-label">Height:</label>
+            <input type="number" id="height-input" class="form-control" placeholder="Enter height in pixels">
+          </div>
+        </div>
+        <div class="mt-3" id="resize-action-buttons" style="display: none;">
+          <button id="resize-button" class="btn btn-success">Resize</button>
+          <span id="resize-complete-text" class="text-success ms-3" style="display: none;">Resized Complete</span>
+        </div>
+        <div class="mt-3">
+          <div id="resize-progress-container" class="progress" style="display: none;">
+            <div id="resize-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div>
+          </div>
+        </div>
+        <div id="resize-preview" class="mt-3" style="display: none;">
+          <h5 id="resize-preview-text">Resized Image Preview:</h5>
+          <img id="resized-image-preview" src="" alt="Resized Image Preview" style="max-width: 100%;">
+          <p id="resized-image-dimensions">New Dimensions: </p>
+        </div>
+        <div id="icon-previews" class="mt-3" style="display: none;">
+          <h5 id="icon-previews-text">Icon Previews:</h5>
+          <div id="icon-preview-container" class="d-flex flex-wrap"></div>
+        </div>
+        <div class="d-flex flex-column flex-sm-row align-items-start mt-3" id="action-buttons">
+          <button id="save-resized-button" class="btn btn-primary mb-2 mb-sm-0" style="display: none;">Save Resized Image</button>
+          <button id="bulk-resize-button" class="btn btn-warning ms-sm-3" style="display: none;">Save as Zip</button>
+          <div class="d-flex align-items-center ms-sm-3">
+            <span id="image-saved-path" class="text-success ms-3" style="display: none;">Image Saved: <span id="saved-image-path"></span></span>
+            <button id="open-save-path-button" class="btn btn-secondary btn-sm ms-3" style="display: none;">
+              <i class="bi bi-folder-fill text-warning"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="settings-section" class="section">
+        <h1 class="mt-5">Settings</h1>
+        <div class="mb-3">
+          <label for="output-directory-resize" class="form-label">Resize Output Directory:</label>
+          <input type="text" id="output-directory-resize" class="form-control mb-2" placeholder="Enter output directory for resized images" readonly>
+          <div class="d-flex">
+            <button id="select-output-directory-resize" class="btn btn-primary btn-sm me-2">Select Directory</button>
+            <button id="open-output-directory-resize" class="btn btn-secondary btn-sm"><i class="bi bi-folder-fill text-warning"></i></button>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="output-directory-convert" class="form-label">Convert Output Directory:</label>
+          <input type="text" id="output-directory-convert" class="form-control mb-2" placeholder="Enter output directory for converted images" readonly>
+          <div class="d-flex">
+            <button id="select-output-directory-convert" class="btn btn-primary btn-sm me-2">Select Directory</button>
+            <button id="open-output-directory-convert" class="btn btn-secondary btn-sm"><i class="bi bi-folder-fill text-warning"></i></button>
+          </div>
+        </div>
+        <button id="save-settings-button" class="btn btn-success">Save Settings</button>
+      </div>
+    </main>
+  </div>
+  <script src="renderer.js"></script>
+</body>
+</html>
