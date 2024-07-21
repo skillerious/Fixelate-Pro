@@ -14,5 +14,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings),
   loadSettings: () => ipcRenderer.invoke('load-settings'),
   openDirectory: (directoryPath) => ipcRenderer.invoke('open-directory', directoryPath),
-  showSaveDialog: (options) => ipcRenderer.invoke('show-save-dialog', options)
+  showSaveDialog: (options) => ipcRenderer.invoke('show-save-dialog', options),
+  showNotification: (title, body) => ipcRenderer.invoke('show-notification', { title, body })
 });

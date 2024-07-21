@@ -8,8 +8,21 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const darkModeToggle = document.getElementById('dark-mode-toggle');
+      darkModeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-mode');
+        darkModeToggle.classList.toggle('bi-sun');
+        darkModeToggle.classList.toggle('bi-moon');
+      });
+    });
+  </script>
 </head>
 <body class="bg-dark text-light">
+  <div class="d-flex justify-content-end p-2">
+    <button id="dark-mode-toggle" class="btn btn-outline-light bi bi-moon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Toggle Dark Mode"></button>
+  </div>
   <div class="sidebar d-flex flex-column align-items-center">
     <div class="flex-grow-1">
       <ul class="nav flex-column text-center">
@@ -66,9 +79,6 @@
           <div id="progress-container" class="progress" style="display: none;">
             <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">0%</div>
           </div>
-        </div>
-        <div id="confirmation" class="alert alert-success mt-3" style="display: none;" role="alert">
-          Conversion completed!
         </div>
       </div>
       <div id="resize-section" class="section">
@@ -179,7 +189,7 @@
           <button id="save-cropped-button" class="btn btn-primary mt-3">Save Cropped Image</button>
           <div class="d-flex align-items-center mt-3">
             <span id="cropped-image-saved-path" class="text-success ms-3" style="display: none;">Image Saved: <span id="saved-cropped-image-path"></span></span>
-            <button id="open-cropped-save-path-button" class="btn btn-secondary btn-sm ms-3" style="display: none;">
+            <button id="open-cropped-save-path-button" class="btn btn-secondary btn-sm ms-3">
               <i class="bi bi-folder-fill text-warning"></i>
             </button>
           </div>
@@ -207,7 +217,33 @@
       </div>
     </main>
   </div>
+  <div id="status-bar" class="status-bar bg-dark text-light p-2"></div>
+  <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="infoModalLabel">Information</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          This is an informational modal.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <script src="renderer.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+      const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+      })
+    });
+  </script>
 </body>
 </html>

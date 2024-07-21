@@ -358,13 +358,13 @@ document.getElementById('convert-button').addEventListener('click', async () => 
   const format = document.getElementById('format-select').value;
   const progressBar = document.getElementById('progress-bar');
   const progressContainer = document.getElementById('progress-container');
-  const confirmation = document.getElementById('confirmation');
+  const statusBar = document.getElementById('status-bar');
 
   const settings = await window.electronAPI.loadSettings();
   const outputDirectory = settings.convertOutputDir || path.dirname(filePaths[0]);
 
   progressContainer.style.display = 'block';
-  confirmation.style.display = 'none';
+  statusBar.style.display = 'none';
   progressBar.style.width = '0%';
   progressBar.textContent = '0%';
 
@@ -386,7 +386,8 @@ document.getElementById('convert-button').addEventListener('click', async () => 
   }
 
   progressContainer.style.display = 'none';
-  confirmation.style.display = 'block';
+  statusBar.style.display = 'block';
+  statusBar.textContent = 'Conversion completed!';
 });
 
 document.getElementById('select-crop-files').addEventListener('click', async () => {
@@ -555,4 +556,22 @@ document.getElementById('open-output-directory-convert').addEventListener('click
   } else {
     alert('No directory selected');
   }
+});
+
+function updateStatusBar(message) {
+  const statusBar = document.getElementById('status-bar');
+  statusBar.textContent = message;
+}
+
+function showNotification(title, body) {
+  window.electronAPI.showNotification(title, body);
+}
+
+// Example usage of status bar and notifications
+document.getElementById('convert-button').addEventListener('click', async () => {
+  updateStatusBar('Conversion in progress...');
+  showNotification('Conversion', 'Conversion started!');
+  // Perform the conversion...
+  updateStatusBar('Conversion completed!');
+  showNotification('Conversion', 'Conversion completed!');
 });
