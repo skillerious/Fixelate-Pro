@@ -17,6 +17,7 @@
   "dependencies": {
     "adm-zip": "^0.5.14",
     "bootstrap": "^5.3.3",
+    "cropperjs": "^1.6.2",
     "sharp": "^0.33.4"
   }
 }

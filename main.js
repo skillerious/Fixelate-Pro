@@ -11,13 +11,10 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
-    autoHideMenuBar: true,  // Add this line to hide the default menu bar
+    autoHideMenuBar: true,
   });
 
   mainWindow.loadFile('index.html');
-
-  // Remove or comment out the line below to disable the debug tools
-  // mainWindow.webContents.openDevTools();
 
   ipcMain.handle('select-files', async () => {
     const result = await dialog.showOpenDialog(mainWindow, {
@@ -50,6 +47,18 @@ function createWindow() {
     const convertedFilePath = path.join(outputDirectory, `${parsedPath.name}.${format}`);
     await sharp(filePath).toFormat(format).toFile(convertedFilePath);
     return convertedFilePath;
+  });
+
+  ipcMain.handle('crop-image', async (event, { filePath, cropX, cropY, cropWidth, cropHeight }) => {
+    const buffer = await sharp(filePath).extract({ left: cropX, top: cropY, width: cropWidth, height: cropHeight }).toBuffer();
+    return buffer;
+  });
+
+  ipcMain.handle('save-cropped-image', async (event, { filePath, buffer, cropWidth, cropHeight, outputDirectory }) => {
+    const parsedPath = path.parse(filePath);
+    const croppedFilePath = path.join(outputDirectory, `${parsedPath.name}_cropped_${cropWidth}x${cropHeight}${parsedPath.ext}`);
+    fs.writeFileSync(croppedFilePath, buffer);
+    return croppedFilePath;
   });
 
   ipcMain.handle('save-bulk-resized-images-as-zip', async (event, { filePaths, sizes, zipFilePath }) => {

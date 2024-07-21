@@ -1,3 +1,32 @@
+let cropper;
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const sectionId = link.getAttribute('data-section');
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+        if (section.id === sectionId + '-section') {
+          section.classList.add('active');
+        }
+      });
+      document.querySelectorAll('.nav-link').forEach(navLink => {
+        navLink.classList.remove('active');
+      });
+      link.classList.add('active');
+    });
+  });
+
+  // Load settings on startup
+  window.electronAPI.loadSettings().then(settings => {
+    document.getElementById('output-directory-resize').value = settings.resizeOutputDir || '';
+    document.getElementById('output-directory-convert').value = settings.convertOutputDir || '';
+  });
+
+  // Other event listeners...
+});
+
 document.getElementById('select-files').addEventListener('click', async () => {
   const filePaths = await window.electronAPI.selectFiles();
   const fileList = document.getElementById('file-list');
@@ -360,6 +389,103 @@ document.getElementById('convert-button').addEventListener('click', async () => 
   confirmation.style.display = 'block';
 });
 
+document.getElementById('select-crop-files').addEventListener('click', async () => {
+  const filePaths = await window.electronAPI.selectFiles();
+  const fileList = document.getElementById('crop-file-list');
+  const cropImageInfo = document.getElementById('crop-image-info');
+  const cropImageDimensions = document.getElementById('crop-image-dimensions');
+  const cropImageSize = document.getElementById('crop-image-size');
+  const cropImagePreview = document.getElementById('crop-image-preview');
+  const cropOptions = document.getElementById('crop-options');
+
+  fileList.innerHTML = '';
+  cropImageInfo.style.display = 'none';
+  cropOptions.style.display = 'none';
+
+  if (filePaths.length > 0) {
+    const filePath = filePaths[0]; // Only display info for the first selected file
+    const metadata = await window.electronAPI.getImageMetadata(filePath);
+
+    cropImageDimensions.textContent = `Dimensions: ${metadata.width}x${metadata.height}`;
+    cropImageSize.textContent = `Size: ${(metadata.size / 1024).toFixed(2)} KB`;
+    cropImagePreview.src = filePath;
+    cropImageInfo.style.display = 'block';
+    cropOptions.style.display = 'block';
+
+    // Initialize Cropper.js
+    if (cropper) {
+      cropper.destroy();
+    }
+    cropper = new Cropper(cropImagePreview, {
+      aspectRatio: NaN,
+      viewMode: 1,
+      autoCropArea: 1,
+    });
+  }
+
+  filePaths.forEach(filePath => {
+    const li = document.createElement('li');
+    li.textContent = filePath;
+    fileList.appendChild(li);
+  });
+});
+
+document.getElementById('crop-button').addEventListener('click', async () => {
+  const filePaths = Array.from(document.getElementById('crop-file-list').children).map(li => li.textContent);
+  const croppedImagePreview = document.getElementById('cropped-image-preview');
+  const croppedImageDimensions = document.getElementById('cropped-image-dimensions');
+  const cropPreviewContainer = document.getElementById('crop-preview');
+  const cropPreviewText = document.getElementById('crop-preview-text');
+  const saveCroppedButton = document.getElementById('save-cropped-button');
+  const croppedImageSavedPath = document.getElementById('cropped-image-saved-path');
+  const savedCroppedImagePath = document.getElementById('saved-cropped-image-path');
+  const openCroppedSavePathButton = document.getElementById('open-cropped-save-path-button');
+
+  const settings = await window.electronAPI.loadSettings();
+  const outputDirectory = settings.resizeOutputDir || path.dirname(filePaths[0]);
+
+  try {
+    const filePath = filePaths[0]; // Only handle the first file for simplicity
+    const cropData = cropper.getData();
+    const cropX = Math.round(cropData.x);
+    const cropY = Math.round(cropData.y);
+    const cropWidth = Math.round(cropData.width);
+    const cropHeight = Math.round(cropData.height);
+
+    const croppedImageBuffer = await window.electronAPI.cropImage({ filePath, cropX, cropY, cropWidth, cropHeight });
+
+    const blob = new Blob([croppedImageBuffer], { type: 'image/jpeg' });
+    const url = URL.createObjectURL(blob);
+    croppedImagePreview.src = url;
+    croppedImageDimensions.textContent = `New Dimensions: ${cropWidth}x${cropHeight}`;
+    cropPreviewContainer.style.display = 'block';
+    cropPreviewText.style.display = 'block';
+    saveCroppedButton.style.display = 'block';
+
+    saveCroppedButton.onclick = async () => {
+      const savedPath = await window.electronAPI.saveCroppedImage({
+        filePath,
+        buffer: croppedImageBuffer,
+        cropWidth,
+        cropHeight,
+        outputDirectory
+      });
+      savedCroppedImagePath.textContent = savedPath;
+      croppedImageSavedPath.style.display = 'inline';
+      openCroppedSavePathButton.style.display = 'inline';
+
+      openCroppedSavePathButton.onclick = () => {
+        window.electronAPI.openPath(savedPath);
+      };
+    };
+
+    cropPreviewContainer.scrollIntoView({ behavior: 'smooth' });
+  } catch (error) {
+    console.error('Cropping failed:', error);
+    alert(`Failed to crop ${filePaths[0]}: ${error.message}`);
+  }
+});
+
 document.getElementById('select-output-directory-resize').addEventListener('click', async () => {
   const directoryPath = await window.electronAPI.selectDirectory();
   document.getElementById('output-directory-resize').value = directoryPath;
@@ -398,28 +524,4 @@ document.getElementById('open-output-directory-convert').addEventListener('click
   } else {
     alert('No directory selected');
   }
-});
-
-document.querySelectorAll('.nav-link').forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    document.querySelectorAll('.section').forEach(section => {
-      section.classList.remove('active');
-    });
-    document.querySelector(`#${link.getAttribute('data-section')}-section`).classList.add('active');
-    document.querySelectorAll('.nav-link').forEach(navLink => {
-      navLink.classList.remove('active');
-    });
-    link.classList.add('active');
-  });
-});
-
-// Initial load
-document.querySelector('.nav-link[data-section="convert"]').click();
-
-// Load settings on startup
-window.addEventListener('DOMContentLoaded', async () => {
-  const settings = await window.electronAPI.loadSettings();
-  document.getElementById('output-directory-resize').value = settings.resizeOutputDir || '';
-  document.getElementById('output-directory-convert').value = settings.convertOutputDir || '';
 });
