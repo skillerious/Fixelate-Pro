@@ -16,9 +16,10 @@ function createWindow() {
 
   mainWindow.loadFile('index.html');
 
-  ipcMain.handle('select-files', async () => {
+  ipcMain.handle('select-files', async (event, multiple = true) => {
+    const properties = multiple ? ['openFile', 'multiSelections'] : ['openFile'];
     const result = await dialog.showOpenDialog(mainWindow, {
-      properties: ['openFile', 'multiSelections'],
+      properties,
       filters: [{ name: 'Images', extensions: ['jpg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'ico', 'heic'] }],
     });
     return result.filePaths;

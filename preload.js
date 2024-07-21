@@ -1,7 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  selectFiles: () => ipcRenderer.invoke('select-files'),
+  selectFiles: (multiple = true) => ipcRenderer.invoke('select-files', multiple),
   getImageMetadata: (filePath) => ipcRenderer.invoke('get-image-metadata', filePath),
   resizeImage: (data) => ipcRenderer.invoke('resize-image', data),
   saveResizedImage: (data) => ipcRenderer.invoke('save-resized-image', data),

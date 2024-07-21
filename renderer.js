@@ -390,17 +390,19 @@ document.getElementById('convert-button').addEventListener('click', async () => 
 });
 
 document.getElementById('select-crop-files').addEventListener('click', async () => {
-  const filePaths = await window.electronAPI.selectFiles();
+  const filePaths = await window.electronAPI.selectFiles(false); // Ensure only one file is selected
   const fileList = document.getElementById('crop-file-list');
   const cropImageInfo = document.getElementById('crop-image-info');
   const cropImageDimensions = document.getElementById('crop-image-dimensions');
   const cropImageSize = document.getElementById('crop-image-size');
   const cropImagePreview = document.getElementById('crop-image-preview');
   const cropOptions = document.getElementById('crop-options');
+  const clearCropFilesButton = document.getElementById('clear-crop-files');
 
   fileList.innerHTML = '';
   cropImageInfo.style.display = 'none';
   cropOptions.style.display = 'none';
+  clearCropFilesButton.style.display = 'none';
 
   if (filePaths.length > 0) {
     const filePath = filePaths[0]; // Only display info for the first selected file
@@ -411,6 +413,7 @@ document.getElementById('select-crop-files').addEventListener('click', async () 
     cropImagePreview.src = filePath;
     cropImageInfo.style.display = 'block';
     cropOptions.style.display = 'block';
+    clearCropFilesButton.style.display = 'block';
 
     // Initialize Cropper.js
     if (cropper) {
@@ -428,6 +431,34 @@ document.getElementById('select-crop-files').addEventListener('click', async () 
     li.textContent = filePath;
     fileList.appendChild(li);
   });
+});
+
+document.getElementById('clear-crop-files').addEventListener('click', () => {
+  const fileList = document.getElementById('crop-file-list');
+  const cropImageInfo = document.getElementById('crop-image-info');
+  const cropOptions = document.getElementById('crop-options');
+  const clearCropFilesButton = document.getElementById('clear-crop-files');
+  const cropImagePreview = document.getElementById('crop-image-preview');
+  const cropPreviewContainer = document.getElementById('crop-preview');
+  const cropPreviewText = document.getElementById('crop-preview-text');
+  const croppedImagePreview = document.getElementById('cropped-image-preview');
+  const croppedImageDimensions = document.getElementById('cropped-image-dimensions');
+  const saveCroppedButton = document.getElementById('save-cropped-button');
+  const croppedImageSavedPath = document.getElementById('cropped-image-saved-path');
+  const openCroppedSavePathButton = document.getElementById('open-cropped-save-path-button');
+
+  fileList.innerHTML = '';
+  cropImageInfo.style.display = 'none';
+  cropOptions.style.display = 'none';
+  clearCropFilesButton.style.display = 'none';
+  cropImagePreview.src = '';
+  cropPreviewContainer.style.display = 'none';
+  cropPreviewText.style.display = 'none';
+  croppedImagePreview.src = '';
+  croppedImageDimensions.textContent = '';
+  saveCroppedButton.style.display = 'none';
+  croppedImageSavedPath.style.display = 'none';
+  openCroppedSavePathButton.style.display = 'none';
 });
 
 document.getElementById('crop-button').addEventListener('click', async () => {
