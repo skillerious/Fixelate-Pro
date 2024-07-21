@@ -29,75 +29,52 @@ body::-webkit-scrollbar-thumb:hover {
   top: 0;
   bottom: 0;
   height: 100%;
-  width: 250px;
+  width: 80px;
   display: flex;
   flex-direction: column;
-  scrollbar-width: thin;
-  scrollbar-color: #333 #111;
+  align-items: center;
+  padding: 10px 0;
 }
 
-.sidebar::-webkit-scrollbar {
-  width: 12px;
-}
-
-.sidebar::-webkit-scrollbar-track {
-  background: #111;
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-  background-color: #333;
-  border-radius: 10px;
-  border: 2px solid #111;
-}
-
-.sidebar::-webkit-scrollbar-thumb:hover {
-  background-color: #555;
+.sidebar .flex-grow-1 {
+  flex-grow: 1;
 }
 
 .main-content {
-  margin-left: 250px;
+  margin-left: 80px;
   padding-bottom: 20px;
-  scrollbar-width: thin;
-  scrollbar-color: #333 #111;
-}
-
-.main-content::-webkit-scrollbar {
-  width: 12px;
-}
-
-.main-content::-webkit-scrollbar-track {
-  background: #111;
-}
-
-.main-content::-webkit-scrollbar-thumb {
-  background-color: #333;
-  border-radius: 10px;
-  border: 2px solid #111;
-}
-
-.main-content::-webkit-scrollbar-thumb:hover {
-  background-color: #555;
 }
 
 .sidebar .nav-link {
   color: #cfd8dc;
-  padding: 10px 15px;
+  padding: 10px;
+  width: 60px;
+  height: 60px;
+  text-align: center;
   position: relative;
   transition: background-color 0.3s ease;
+  border-radius: 8px; /* Added to make the buttons more square */
+  margin: 5px 0; /* Added margin to separate the buttons */
 }
 
 .sidebar .nav-link:hover {
   background-color: #495057;
+  transition: background-color 0.3s ease, border-radius 0.3s ease;
 }
 
-.sidebar .nav-link.active::before {
+.sidebar .nav-link.active::after {
   content: '';
   position: absolute;
   left: 0;
-  top: 0;
+  right: 0;
   bottom: 0;
-  width: 5px;
+  height: 4px;
   background-color: #007bff;
+  border-radius: 2px;
+}
+
+.sidebar .nav-link i {
+  font-size: 24px;
 }
 
 .progress-bar {
