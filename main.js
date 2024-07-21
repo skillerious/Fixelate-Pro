@@ -45,6 +45,13 @@ function createWindow() {
     return resizedFilePath;
   });
 
+  ipcMain.handle('convert-image', async (event, { filePath, format, outputDirectory }) => {
+    const parsedPath = path.parse(filePath);
+    const convertedFilePath = path.join(outputDirectory, `${parsedPath.name}.${format}`);
+    await sharp(filePath).toFormat(format).toFile(convertedFilePath);
+    return convertedFilePath;
+  });
+
   ipcMain.handle('save-bulk-resized-images-as-zip', async (event, { filePaths, sizes, zipFilePath }) => {
     const zip = archiver('zip', { zlib: { level: 9 } });
     const output = fs.createWriteStream(zipFilePath);

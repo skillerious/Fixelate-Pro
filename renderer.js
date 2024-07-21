@@ -132,7 +132,6 @@ document.getElementById('custom-size-button').addEventListener('click', () => {
 
 document.getElementById('resize-button').addEventListener('click', async () => {
   const filePaths = Array.from(document.getElementById('resize-file-list').children).map(li => li.textContent);
-  console.log('Selected files for resizing:', filePaths);  // Log selected file paths
   const progressBar = document.getElementById('resize-progress-bar');
   const progressContainer = document.getElementById('resize-progress-container');
   const previewContainer = document.getElementById('resize-preview');
@@ -168,8 +167,6 @@ document.getElementById('resize-button').addEventListener('click', async () => {
     iconSizes.push({ width, height });
   }
 
-  console.log(`Resizing to dimensions: ${iconSizes.map(size => `${size.width}x${size.height}`).join(', ')}`);
-
   progressContainer.style.display = 'block';
   previewContainer.style.display = 'none';
   resizePreviewText.style.display = 'none';
@@ -190,9 +187,7 @@ document.getElementById('resize-button').addEventListener('click', async () => {
     try {
       iconPreviewContainer.innerHTML = '';  // Clear previous previews
       for (const size of sizesToResize) {
-        console.log(`Resizing file: ${filePath} to ${size.width}x${size.height}`);
         const resizedImageBuffer = await window.electronAPI.resizeImage({ filePath, width: size.width, height: size.height });
-        console.log(`Resized: ${filePath}`);
         const progress = ((i + 1) / filePaths.length) * 100;
         progressBar.style.width = `${progress}%`;
         progressBar.textContent = `${Math.round(progress)}%`;
@@ -287,8 +282,6 @@ document.getElementById('bulk-resize-button').addEventListener('click', async ()
     iconSizes.push({ width, height });
   }
 
-  console.log(`Resizing to dimensions: ${iconSizes.map(size => `${size.width}x${size.height}`).join(', ')}`);
-
   progressContainer.style.display = 'block';
   resizeCompleteText.style.display = 'none';
   imageSavedPath.style.display = 'none';
@@ -329,6 +322,42 @@ document.getElementById('bulk-resize-button').addEventListener('click', async ()
 
   progressContainer.style.display = 'none';
   resizeCompleteText.style.display = 'inline';
+});
+
+document.getElementById('convert-button').addEventListener('click', async () => {
+  const filePaths = Array.from(document.getElementById('file-list').children).map(li => li.textContent);
+  const format = document.getElementById('format-select').value;
+  const progressBar = document.getElementById('progress-bar');
+  const progressContainer = document.getElementById('progress-container');
+  const confirmation = document.getElementById('confirmation');
+
+  const settings = await window.electronAPI.loadSettings();
+  const outputDirectory = settings.convertOutputDir || path.dirname(filePaths[0]);
+
+  progressContainer.style.display = 'block';
+  confirmation.style.display = 'none';
+  progressBar.style.width = '0%';
+  progressBar.textContent = '0%';
+
+  for (let i = 0; i < filePaths.length; i++) {
+    const filePath = filePaths[i];
+    try {
+      const convertedFilePath = await window.electronAPI.convertImage({ filePath, format, outputDirectory });
+      const progress = ((i + 1) / filePaths.length) * 100;
+      progressBar.style.width = `${progress}%`;
+      progressBar.textContent = `${Math.round(progress)}%`;
+
+      if (i === filePaths.length - 1) {
+        alert(`Converted images saved to: ${outputDirectory}`);
+      }
+    } catch (error) {
+      console.error('Conversion failed:', error);
+      alert(`Failed to convert ${filePath}: ${error.message}`);
+    }
+  }
+
+  progressContainer.style.display = 'none';
+  confirmation.style.display = 'block';
 });
 
 document.getElementById('select-output-directory-resize').addEventListener('click', async () => {
